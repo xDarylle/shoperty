@@ -1,13 +1,12 @@
-# FRONTEND for Shoperty
+# Frontend
 
 ## Requirements
 1. Download [Node](https://nodejs.org/en/download/)
 
 ## Instruction
-1. Clone this repository:
+1. Set directory to frontend:
 ```
-git clone https://github.com/zneret03/ecommerce
-cd ecommerce
+cd frontend
 ```
 2. npm install
 ```
