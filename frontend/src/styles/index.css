@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+button.css-1knaqv7-MuiButtonBase-root-MuiButton-root {
+  color: #eb4800;
+  font-weight: bold;
+}
+
+.css-1ycxvqq-MuiSwitch-root {
+  color: #eb4800;
+  font-weight: bold;
+}
+
+.PrivateSwitchBase-input {
+  color: #eb4800;
+}
+
+#quantity::-webkit-inner-spin-button,
+#quantity::-webkit-outer-spin-button { 
+	-webkit-appearance: none;
+} 
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+  --toastify-color-light: #EB4800;
+  --toastify-text-color-light: #fff;
+}
