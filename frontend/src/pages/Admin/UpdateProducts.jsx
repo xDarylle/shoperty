@@ -5,6 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom"
 import { axiosRequest } from "api"
 import swal from "sweetalert2"
 import { v4 as uuidv4 } from 'uuid';
+import { Plus } from 'react-feather'
 
 const initialState = {
   productName: "",
@@ -23,6 +24,9 @@ export default function UpdateProducts() {
 
   const query = useLocation()
   const formData = new FormData();
+
+  const [colors, setColors] = useState([])
+  const [sizes, setSizes] = useState([])
 
   const prodID = query.pathname.substring(query.pathname.lastIndexOf('/') + 1)
 
@@ -67,6 +71,9 @@ export default function UpdateProducts() {
       formData.append(key, datas[key]);
     }
 
+    formData.append("sizes", sizes)
+    formData.append("colors", colors)
+    
     try {
       const response = await axiosRequest.post(`${prod_url}/${prodID}`, formData)
       const { status } = response
@@ -140,6 +147,8 @@ export default function UpdateProducts() {
         if (status === 200) {
           setState(prod_data)
           setImage(data.data.image)
+          setColors(prod_data.colors)
+          setSizes(prod_data.sizes)
         }
       }
       catch (e) {
@@ -151,6 +160,46 @@ export default function UpdateProducts() {
     getProduct()
     
   }, [navigate, prodID])
+
+  const addColor = async() => {
+    const { value: color } = await swal.fire({
+      title: 'Add Colors',
+      text: 'Note: Separate colors by comma (Ex. Black,White,)',
+      input: 'text',
+      inputValue: colors.toLocaleString(),
+      showCancelButton: true,
+      width: '400px',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'You need to write something!'
+        }
+      }
+    })
+
+    if (color) {
+      setColors(color.split(","))
+    }
+  }
+
+  const addSize = async() => {
+    const { value: size } = await swal.fire({
+      title: 'Add Sizes',
+      text: 'Separate sizes by comma (Ex. XS,S,M,L,)',
+      input: 'text',
+      inputValue: sizes.toLocaleString(),
+      showCancelButton: true,
+      width: '400px',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'You need to write something!'
+        }
+      }
+    })
+
+    if (size) {
+      setSizes(size.split(","))
+    }
+  }
 
   return (
     <PrivateLayout
@@ -233,6 +282,30 @@ export default function UpdateProducts() {
                       }
                     })}
                   </SelectDropdown>
+                </div>
+
+                <div className="mb-6 flex flex-col gap-y-1">
+                  <p className="text-xl text-black/70">Colors</p>
+                  <div className="flex flex-row gap-x-2">
+                    <InputField
+                      type="text"
+                      value={colors}
+                      disabled
+                    />
+                    <button type="button" onClick={addColor} className="px-3 bg-amber-600 rounded text-white"><Plus className="w-5" /></button>
+                  </div>
+                </div>
+
+                <div className="mb-6 flex flex-col gap-y-1">
+                  <p className="text-xl text-black/70">Sizes</p>
+                  <div className="flex flex-row gap-x-2">
+                    <InputField
+                      type="text"
+                      value={sizes}
+                      disabled
+                    />
+                    <button type="button" onClick={addSize} className="px-3 bg-amber-600 rounded text-white"><Plus className="w-5" /></button>
+                  </div>
                 </div>
               </div>
 

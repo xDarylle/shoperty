@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom"
 import { axiosRequest } from "api"
 import swal from "sweetalert2"
 import { v4 as uuidv4 } from 'uuid';
+import { Plus } from 'react-feather'
 
 const initialState = {
   productName: "",
@@ -30,6 +31,9 @@ export default function AddProducts() {
 
   const [categoryOptions, setCategoryOptions] = useState([])
   const [genderOptions, setGenderOptions] = useState([])
+
+  const [colors, setColors] = useState([])
+  const [sizes, setSizes] = useState([])
 
   const onChange = (event) => {
     const { name, value } = event.target
@@ -83,6 +87,9 @@ export default function AddProducts() {
     for (let key in datas) {
       formData.append(key, datas[key]);
     }
+
+    formData.append("sizes", sizes)
+    formData.append("colors", colors)
 
     try {
       const response = await axiosRequest.post(prod_url, formData)
@@ -147,6 +154,46 @@ export default function AddProducts() {
       ignore = true
     }
   }, [navigate])
+
+  const addColor = async() => {
+    const { value: color } = await swal.fire({
+      title: 'Add Colors',
+      text: 'Note: Separate colors by comma (Ex. Black,White,)',
+      input: 'text',
+      inputValue: colors.toLocaleString(),
+      showCancelButton: true,
+      width: '400px',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'You need to write something!'
+        }
+      }
+    })
+
+    if (color) {
+      setColors(color.split(","))
+    }
+  }
+
+  const addSize = async() => {
+    const { value: size } = await swal.fire({
+      title: 'Add Sizes',
+      text: 'Separate sizes by comma (Ex. XS,S,M,L,)',
+      input: 'text',
+      inputValue: sizes.toLocaleString(),
+      showCancelButton: true,
+      width: '400px',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'You need to write something!'
+        }
+      }
+    })
+
+    if (size) {
+      setSizes(size.split(","))
+    }
+  }
 
   return (
     <PrivateLayout
@@ -216,6 +263,30 @@ export default function AddProducts() {
                     })}
                   </SelectDropdown>
                 </div>
+
+                <div className="mb-6 flex flex-col gap-y-1">
+                  <p className="text-xl text-black/70">Colors</p>
+                  <div className="flex flex-row gap-x-2">
+                    <InputField
+                      type="text"
+                      value={colors}
+                      disabled
+                    />
+                    <button type="button" onClick={addColor} className="px-3 bg-amber-600 rounded text-white"><Plus className="w-5" /></button>
+                  </div>
+                </div>
+
+                <div className="mb-6 flex flex-col gap-y-1">
+                  <p className="text-xl text-black/70">Sizes</p>
+                  <div className="flex flex-row gap-x-2">
+                    <InputField
+                      type="text"
+                      value={sizes}
+                      disabled
+                    />
+                    <button type="button" onClick={addSize} className="px-3 bg-amber-600 rounded text-white"><Plus className="w-5" /></button>
+                  </div>
+                </div>
               </div>
 
               <div>
@@ -224,12 +295,12 @@ export default function AddProducts() {
               </div>
             </div>
             <div className="md:w-1/2 md:pr-4 text-center lg:text-left mt-8">
-                  <button
-                    type="submit"
-                    className="inline-block px-7 py-3 bg-amber-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-amber-700 hover:shadow-lg focus:bg-amber-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-amber-800 active:shadow-lg transition duration-150 ease-in-out w-full"
-                  >
-                    Create Product
-                  </button>
+              <button
+                type="submit"
+                className="inline-block px-7 py-3 bg-amber-600 text-white font-medium text-sm leading-snug uppercase rounded shadow-md hover:bg-amber-700 hover:shadow-lg focus:bg-amber-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-amber-800 active:shadow-lg transition duration-150 ease-in-out w-full"
+              >
+                Create Product
+              </button>
             </div>
           </div>
         </form>

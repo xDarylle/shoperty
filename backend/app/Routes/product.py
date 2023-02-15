@@ -1,11 +1,10 @@
 from flask import request
 from app import app
-from app.models import Shop, Product, Gender, Sold, Category, QuantityStatus, Order, User, Cart, CartItem
+from app.models import Shop, Product, Gender, Sold, Category, QuantityStatus, Order, User, Cart, CartItem, Color, Size
 from flask_login import login_required, current_user
 from app.Components.response import Response
 from app.Components.image_handler import save_img, delete_img
 from app.recommender import get_recommendations
-from sqlalchemy import and_
 
 # ADMIN SIDE ROUTES
 @app.route('/api/v1/admin/product', methods=['POST', 'GET'])
@@ -23,6 +22,9 @@ def products():
         price = request.form['price']
         gender_id = request.form['gender']
         category_id = request.form['category']
+
+        colors = [color.strip() for color in request.form['colors'].split(',') if color.strip()]
+        sizes = [size.strip() for size in request.form['sizes'].split(',') if size.strip()]
 
         shop = Shop.query.filter_by(user=current_user.id).first_or_404()
         if shop:
@@ -57,6 +59,20 @@ def products():
 
                 sold.create()
 
+                for color in colors:
+                    col = Color(
+                        color=color,
+                        product=product.id
+                    )
+                    col.create()
+                
+                for size in sizes:
+                    s = Size(
+                        size=size,
+                        product=product.id
+                    )
+                    s.create()
+
                 return Response(
                     status=201,
                     message="success",
@@ -80,7 +96,10 @@ def products():
             prod = product.to_dict()
             prod['category'] = product.cat.name
             prod['gender'] = product.gen.name
-            
+
+            prod['colors'] = [color.color for color in Color.query.filter_by(product=product.id).all()]
+            prod['sizes'] = [size.size for size in Size.query.filter_by(product=product.id).all()]
+
             res.append(prod)
 
         return Response(
@@ -99,7 +118,13 @@ def product(id):
             delete_img(product.image)
             quantityStatus = QuantityStatus.query.filter_by(product=product.id).first()
             quantityStatus.delete()
-            
+
+            for color in Color.query.filter_by(product=product.id).all():
+                color.delete()
+
+            for size in Size.query.filter_by(product=product.id).all():
+                size.delete()
+
             product.delete()
             
             return Response(
@@ -118,6 +143,9 @@ def product(id):
             prod = product.to_dict()
             prod['category'] = product.cat.name
             prod['gender'] = product.gen.name
+            prod['colors'] = [color.color for color in Color.query.filter_by(product=product.id).all()]
+            prod['sizes'] = [size.size for size in Size.query.filter_by(product=product.id).all()]
+
             return Response(
                 status=200,
                 data=prod
@@ -130,6 +158,9 @@ def product(id):
         gender_id = request.form['gender']
         category_id = request.form['category']
         image = request.files.get('image')
+
+        colors = [color.strip() for color in request.form['colors'].split(',') if color.strip()]
+        sizes = [size.strip() for size in request.form['sizes'].split(',') if size.strip()]
 
         shop = Shop.query.filter_by(user=current_user.id).first()
         product = Product.query.filter_by(id=id, shop=shop.id).first()
@@ -150,6 +181,26 @@ def product(id):
             product.category = category.id
 
             product.update()
+
+            for color in Color.query.filter_by(product=product.id).all():
+                color.delete()
+
+            for size in Size.query.filter_by(product=product.id).all():
+                size.delete()
+
+            for color in colors:
+                col = Color(
+                    color=color,
+                    product=product.id
+                )
+                col.create()
+            
+            for size in sizes:
+                s = Size(
+                    size=size,
+                    product=product.id
+                )
+                s.create()
 
             return Response(
                 status=201
@@ -342,6 +393,9 @@ def displayproduct(id):
         prod['gender'] = product.gen.name
         prod['quantity'] = quantityStatus.quantity
         prod['sold'] = sold.quantity
+
+        prod['colors'] = [color.color for color in Color.query.filter_by(product=product.id).all()]
+        prod['sizes'] = [size.size for size in Size.query.filter_by(product=product.id).all()]
 
         return Response(
             data=prod,

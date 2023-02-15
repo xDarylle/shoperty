@@ -29,7 +29,6 @@ class QuantityStatus(db.Model, model.Component):
 
     dateUpdated = db.Column(db.TIMESTAMP, onupdate=func.now())
 
-
 class Category(db.Model, model.Component):
     __tablename__ = 'category'
 
@@ -48,28 +47,16 @@ class Gender(db.Model, model.Component):
     name = db.Column(db.String(40), nullable=False)
     product = db.relationship('Product', backref='gen', lazy='joined')
 
-# class Color(db.Model):
-#     __tablename__ = 'color'
+class Color(db.Model, model.Component):
+    __tablename__ = 'color'
 
-#     id = db.Column(db.Integer, primary_key=True)
-#     item_id = db.Column(db.Integer, db.ForeignKey('item.id'))
-#     color = db.Column(db.String(64), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    product = db.Column(db.Integer, db.ForeignKey('product.id'))
+    color = db.Column(db.String(64), nullable=False)
 
-#     def create(self):
-#         db.session.add(self)
-#         db.session.commit()
+class Size(db.Model, model.Component):
+    __tablename__ = 'size'
 
-#     def delete(self):
-#         db.session.delete(self)
-#         db.session.commit()
-
-#     def to_dict(self):
-#         return {c.name: getattr(self, c.name) for c in self.__table__.columns}
-
-# class Variant(db.Model, model.Component):
-#     __tablename__ = 'size'
-
-#     id = db.Column(db.Integer, primary_key=True)
-#     item_id = db.Column(db.Integer, db.ForeignKey('item.id'))
-#     size = db.Column(db.String(10), nullable=False)
-#     quantity = db.Column(db.Integer, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    product = db.Column(db.Integer, db.ForeignKey('product.id'))
+    size = db.Column(db.String(10), nullable=False)

@@ -129,6 +129,18 @@ export default function AdminProducts() {
       width: 100,
     },
     {
+      field: "colors",
+      headerName: "Colors",
+      type: "string",
+      width: 150,
+    },
+    {
+      field: "sizes",
+      headerName: "Sizes",
+      type: "string",
+      width: 150,
+    },
+    {
       field: "dateCreated",
       headerName: "Date Created",
       type: "string",
