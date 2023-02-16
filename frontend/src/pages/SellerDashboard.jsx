@@ -14,7 +14,12 @@ export default function SellerDashboard() {
   const [sales, setSales] = useState([])
   const [salesByCategory, setSalesByCat] = useState([])
   const [topSelling, setTopSelling] = useState([])
-
+  const [sales_base, setSalesBase] = useState("Category")
+  
+  const salesBases = [
+    {id: 1, name:"Category"},
+    {id: 2, name:"Yearly"},
+  ]
 
   useEffect(() => {
     const getReports = async () => {
@@ -119,10 +124,19 @@ export default function SellerDashboard() {
           </div>
 
           <div className="col-span-2 rounded h-96 drop-shadow bg-white p-3">
-            <p className="font-medium text-gray-600 mb-5">Sales Statistics</p>
+            <div className="flex flex-row justify-between">
+              <p className="font-medium text-gray-600 mb-5">Sales Statistics</p>
+              <div className="flex flex-row gap-x-1 align-start">
+                {salesBases.map(base => {
+                  return <button onClick={()=>{setSalesBase(base.id)}} 
+                  className={`text-sm p-2 border rounded ${sales_base==base.id? "bg-amber-600 text-white": "text-black/80"}`}>{base.name}</button>
+                })}
+              </div>
+            </div>
             {sales ?
-              //<Chart data={sales} xAxis="date" yAxis="sales" />
-              <Chart data={salesByCategory} xAxis="category" yAxis="sales" />
+              sales_base === 1 ? 
+              <Chart data={salesByCategory} xAxis="category" yAxis="sales" /> :
+              <Chart data={sales} xAxis="date" yAxis="sales" />
               : ""
             }
 
@@ -163,7 +177,7 @@ export default function SellerDashboard() {
           </div>
           <div className="col-span-3 rounded md:h-full drop-shadow bg-white p-3">
             <p className="font-medium text-gray-600 mb-3">Latest Orders</p>
-            {latestOrders.length > 0?
+            {latestOrders.length > 0 ?
               latestOrders.map((order) => {
                 return (
                   <div className="flex md:flex-row flex-col justify-between border-b-2 border-gray-100 p-3" key={order.id}>
