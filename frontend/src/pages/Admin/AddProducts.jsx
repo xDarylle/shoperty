@@ -66,7 +66,7 @@ export default function AddProducts() {
       return
     }
 
-    if (!gender || !category) {
+    if (!gender || !category || sizes.length === 0 || colors.length === 0) {
       swal.fire({
         title: "Some fields are empty",
         text: "Please fill out all fields",
@@ -155,7 +155,7 @@ export default function AddProducts() {
     }
   }, [navigate])
 
-  const addColor = async() => {
+  const addColor = async () => {
     const { value: color } = await swal.fire({
       title: 'Add Colors',
       text: 'Note: Separate colors by comma (Ex. Black,White,)',
@@ -175,7 +175,7 @@ export default function AddProducts() {
     }
   }
 
-  const addSize = async() => {
+  const addSize = async () => {
     const { value: size } = await swal.fire({
       title: 'Add Sizes',
       text: 'Separate sizes by comma (Ex. XS,S,M,L,)',
