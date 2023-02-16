@@ -1,4 +1,4 @@
-from app.models import Sold, User, Shop, Product, Gender, Category, QuantityStatus, Cart, CartItem, Order, OrderStatus
+from app.models import Sold, User, Shop, Product, Gender, Category, QuantityStatus, Color, Size, Order, OrderStatus
 from werkzeug.security import generate_password_hash
 import os
 from PIL import Image
@@ -64,12 +64,21 @@ def createCategory(id, categoryList):
         cat = Category(name=category, shop=shop.id)
         cat.create()
 
+def createColors(id, colors):
+    for color in colors:
+        c = Color(color=color, product=id)
+        c.create()
+
+def createSizes(id, sizes):
+    for size in sizes:
+        s = Size(size=size, product=id)
+        s.create()
+
 def createProducts(id, num):
     print(f"Creating {num} products...")
     shop = Shop.query.filter_by(user=id).first()
     categoryList = Category.query.filter_by(shop=shop.id).all()
     genderList = Gender.query.all()
-    
 
     for i in range(0, num):
         gender = random.choice(genderList)
@@ -97,6 +106,14 @@ def createProducts(id, num):
         sold = Sold(
             product=product.id,
             quantity = 0
+        )
+
+        createColors(product.id,
+        ["White", "Black", "Red", "Blue"] 
+        )
+
+        createSizes(product.id,
+            ["S", "M", "L","XL"] 
         )
         sold.create()
         quantityStatus.create()
@@ -138,6 +155,8 @@ def purchaseProduct(id, perday, start, end):
             product = random.choice(products).id
             quantity = random.randint(ORDER_MIN, ORDER_MAX)
             quantityStatus = QuantityStatus.query.filter_by(product=product).first()
+            color = random.choice(Color.query.filter_by(product=product).all())
+            size = random.choice(Size.query.filter_by(product=product).all())
 
             if quantityStatus.quantity - quantity > 0:
                 status = OrderStatus.query.filter_by(name='COMPLETE').first()
@@ -149,6 +168,8 @@ def purchaseProduct(id, perday, start, end):
                     number=num,
                     address=address,
                     status = status.id,
+                    color=color.id,
+                    size=size.id,
                     dateCreated = date
                 )
 
