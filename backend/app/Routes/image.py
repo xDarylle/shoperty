@@ -6,9 +6,9 @@ from app.Components.response import Response
 @app.route('/api/v1/images/<image>', methods=['GET'])
 def image(image):
     if request.method == 'GET':
-        img = get_img(image)
-
-        if not img:
+        try:
+            img = get_img(image)
+        except FileNotFoundError:
             return Response(
                 status=404,
             )

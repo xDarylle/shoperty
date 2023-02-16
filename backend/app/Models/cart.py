@@ -14,6 +14,8 @@ class CartItem(db.Model, model.Component):
     id = db.Column(db.Integer, primary_key=True)
     cart = db.Column(db.Integer, db.ForeignKey('cart.id'))
     product = db.Column(db.Integer, db.ForeignKey('product.id'))
+    color = db.Column(db.Integer, db.ForeignKey('color.id'))
+    size = db.Column(db.Integer, db.ForeignKey('size.id'))
     quantity = db.Column(db.Integer, nullable=False)
 
     dateAdded = db.Column(db.TIMESTAMP, server_default=func.now())

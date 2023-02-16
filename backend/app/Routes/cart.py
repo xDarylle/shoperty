@@ -1,6 +1,6 @@
 from flask import request
 from app import app
-from app.models import Cart, CartItem, Product, QuantityStatus, Shop, User
+from app.models import Cart, CartItem, Product, Shop, Color, Size
 from flask_login import login_required, current_user
 from app.Components.response import Response
 
@@ -17,8 +17,13 @@ def cart():
         data = request.get_json()
         product = Product.query.get(data['id'])
         quantity = data['quantity']
+        
+        color = Color.query.get(data['color'])
+        size = Size.query.get(data['size'])
+
         cart = Cart.query.filter_by(user=current_user.id).first()
         cartItem = CartItem.query.filter_by(cart=cart.id, product=product.id).first()
+
 
         if cartItem:
             cartItem.quantity = quantity + cartItem.quantity
@@ -31,7 +36,9 @@ def cart():
         cartItem = CartItem(
             cart = cart.id,
             product = product.id,
-            quantity = quantity
+            quantity = quantity,
+            color=color.id,
+            size=size.id
         )
 
         cartItem.create()
@@ -59,6 +66,9 @@ def cart():
                 prod['gender'] = product.gen.name
                 prod['quantity'] = item.quantity
                 prod['shop'] = shop.shopName
+                prod['color'] = Color.query.get(item.color).color
+                prod['size'] = Size.query.get(item.size).size
+
                 items.append(prod)
 
             return Response(

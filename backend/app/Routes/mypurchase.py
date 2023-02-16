@@ -1,6 +1,6 @@
 from flask import request
 from app import app
-from app.models import Product, Order, OrderStatus, Shop
+from app.models import Product, Order, OrderStatus, Shop, Color, Size
 from flask_login import login_required, current_user
 from app.Components.response import Response
 
@@ -34,6 +34,8 @@ def mypurchase():
             prod['dateCreated'] = order.dateCreated
             prod['orderID'] = order.id
             prod['total'] = order.quantity * product.price
+            prod['color'] = Color.query.get(order.color).color
+            prod['size'] = Size.query.get(order.size).size
 
             products.append(prod)
 

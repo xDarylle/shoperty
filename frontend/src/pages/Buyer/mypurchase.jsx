@@ -125,7 +125,7 @@ export default function MyPurchase() {
         <>
             <Navbar />
             <div className="flex flex-col w-full text-gray-800">
-                <div className="font-bold text-3xl bg-white px-10 py-5">My Purchase ({products? products.length : 0})</div>
+                <div className="font-bold text-3xl bg-white px-10 py-5">My Purchase ({products ? products.length : 0})</div>
                 <div className="w-full py-2 px-5 bg-gray-100 flex flex-col gap-y-3 ">
                     <div className="flex flex-col gap-y-2 mb-10">
                         <div className="md:grid md:grid-cols-8 bg-white px-5 md:px-10 py-3">
@@ -193,7 +193,13 @@ export default function MyPurchase() {
                                                 <div className="bg-gray-200 md:w-16 md:h-16 w-24 h-24">
                                                     <img className="object-cover w-full h-full" src={`${imageUrl}/${product.image}`} alt="" />
                                                 </div>
-                                                <p className="text-xl">{product.productName}</p>
+                                                <div className="flex flex-col gap-y-1">
+                                                    <p className="text-xl font-medium">{product.productName}</p>
+                                                    <div className="flex flex-col text-sm">
+                                                        <p>Color: {product.color}</p>
+                                                        <p>Size: {product.size}</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                         <div className="md:flex items-center grid grid-cols-4 md:justify-center gap-x-2">
@@ -239,7 +245,7 @@ export default function MyPurchase() {
                             )
                         }) : null}
 
-                        {products.length > maxPerPaginate && products.length !== paginate.length?
+                        {products.length > maxPerPaginate && products.length !== paginate.length ?
                             <div className="flex flex-col justify-center items-center mt-5">
                                 <button onClick={() => seeMore()} className="w-96 py-2 bg-white rounded shadow text-gray-500 hover:bg-white/50">See More</button>
                             </div>

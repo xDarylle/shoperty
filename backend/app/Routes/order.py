@@ -2,7 +2,7 @@ from app import app, db
 from flask_login import login_required, current_user
 from flask import request
 from app.Components.response import Response
-from app.models import Order, Shop, Product, OrderStatus, QuantityStatus, Sold
+from app.models import Order, Shop, Product, OrderStatus, QuantityStatus, Sold, Color, Size
 
 @app.route('/api/v1/admin/orders', methods=['GET'])
 @login_required
@@ -32,6 +32,8 @@ def orders():
             detail['dateCreated'] = order.dateCreated
             detail['buyer'] = {"fullname": order.fullname, "number": order.number, "address": order.address}
             detail['status'] = {"name": status.name, 'id': status.id}
+            detail['color'] = Color.query.get(order.color).color
+            detail['size'] = Size.query.get(order.size).size
             data.append(detail)
 
         return Response(

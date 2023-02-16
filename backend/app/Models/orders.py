@@ -9,6 +9,8 @@ class Order(db.Model, model.Component):
     user = db.Column(db.Integer, db.ForeignKey('user.id'))
     product = db.Column(db.Integer, db.ForeignKey('product.id'))
     quantity = db.Column(db.Integer, nullable=False)
+    color = db.Column(db.Integer, db.ForeignKey('color.id'))
+    size = db.Column(db.Integer, db.ForeignKey('size.id'))
     
     fullname = db.Column(db.Text, nullable=False)
     number = db.Column(db.String(14), nullable=False)

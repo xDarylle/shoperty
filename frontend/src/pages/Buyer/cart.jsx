@@ -76,10 +76,10 @@ export default function Cart() {
 
     return (
         <>
-            <Navbar refresh={refresh}/>
+            <Navbar refresh={refresh} />
             <div className="flex flex-col md:flex-row w-screen bg-white text-gray-800">
                 <div className="md:w-2/3 p-8">
-                    <p className="font-bold text-3xl mb-5">Cart ({products? products.length : 0})</p>
+                    <p className="font-bold text-3xl mb-5">Cart ({products ? products.length : 0})</p>
                     {isLoaded ? products.map((product) => {
                         return (
                             <div className="flex flex-row border-t-2 py-4 w-full justify-between" key={product.id}>
@@ -90,10 +90,13 @@ export default function Cart() {
                                     <div className="flex flex-col justify-between">
                                         <div>
                                             <a href={`/product/${product.id}`} className="font-medium text-2xl">{product.productName}</a>
-                                            <div className="flex flex-col gap-y-1 mt-2 text-sm">
-                                                <p>Category: {product.category}</p>
-                                                <p>Gender: {product.gender}</p>
-
+                                            <div className="flex flex-col gap-y-2 mt-2 text-sm">
+                                                <p>Category: <b>{product.category}</b></p>
+                                                <p>Gender: <b>{product.gender}</b></p>
+                                            </div>
+                                            <div className="flex flex-col gap-y-2 mt-5 text-sm">
+                                                <p>Color: <b>{product.color}</b></p>
+                                                <p>Size: <b>{product.size}</b></p>
                                             </div>
                                         </div>
                                         <div className="flex flex-row items-center gap-x-4 h-7 md:mt-0 mt-5">

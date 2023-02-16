@@ -14,7 +14,10 @@ export default function ProductPage() {
     const [product, setProduct] = useState([])
     const [quantity, setQuantity] = useState(1)
     const [isLoaded, setLoaded] = useState(false)
-    const [refresh, setRefresh ] = useState(false)
+    const [refresh, setRefresh] = useState(false)
+
+    const [selectedColor, setSelectedColor] = useState("")
+    const [selectedSize, setSelectedSize] = useState("")
 
     useEffect(() => {
         const getProduct = async () => {
@@ -43,7 +46,14 @@ export default function ProductPage() {
     const addCart = async (event) => {
         event.preventDefault()
         try {
-            const datas = { id: prodID, quantity }
+            if(!selectedColor || !selectedSize) {
+                swal.fire({
+                    title: "Please select color and size",
+                    icon: "warning"
+                })
+                return
+            }
+            const datas = { id: prodID, quantity, color: selectedColor, size: selectedSize }
             const response = await axiosRequest.post("/api/v1/user/cart", datas)
 
             const { status } = response
@@ -63,7 +73,7 @@ export default function ProductPage() {
 
     return (
         <>
-            <Navbar refresh={refresh}/>
+            <Navbar refresh={refresh} />
             <section className="bg-gray-200 w-100 p-3">
                 <div className="bg-white px-3 py-4 flex flex-col md:flex-row mb-3">
                     <div className="w-full md:w-3/6 overflow-hidden">
@@ -97,6 +107,22 @@ export default function ProductPage() {
                                         </div>
                                     </div>
                                 </div>
+                                <div className="flex flex-col gap-y-2">
+                                    <div className="text-lg font-medium mr-5 text-gray-700">Colors</div>
+                                    <div className="flex flex-row gap-x-2">
+                                        {product.colors.map(color => {
+                                            return <button key={color.id} onClick={()=> setSelectedColor(color.id)} className={`border px-4 py-2 text-sm ${selectedColor===color.id? "bg-primary text-white": "bg-gray-100 text-black/80"}`}>{color.color}</button>
+                                        })}
+                                    </div>
+                                </div>
+                                <div className="flex flex-col gap-y-2">
+                                    <div className="text-lg font-medium mr-5 text-gray-700">Sizes</div>
+                                    <div className="flex flex-row gap-x-2">
+                                        {product.sizes.map(size => {
+                                            return <button key={size.id} onClick={()=> setSelectedSize(size.id)} className={`border px-4 py-2 text-sm ${selectedSize===size.id? "bg-primary text-white": "bg-gray-100 text-black/80"}`}>{size.size}</button>
+                                        })}
+                                    </div>
+                                </div>
                             </div>
                             <div className="flex flex-col gap-y-3 pt-5">
                                 <div className="flex flex-row items-center justify-between h-10">
@@ -106,7 +132,7 @@ export default function ProductPage() {
                                             <Minus className="w-3/5" />
                                         </button>
                                         <input id="quantity" className="form-control text-center w-12 block text-xl font-normal h-10 text-gray-700 bg-white bg-clip-padding border border-solid border-gray-300 transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-amber-600 focus:outline-none"
-                                            type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} readOnly/>
+                                            type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} readOnly />
                                         <button onClick={right} className="flex justify-center items-center w-10 h-10 text-gray-600 hover:bg-primary hover:text-white border border-solid border-gray-300">
                                             <Plus className="w-3/5" />
                                         </button>

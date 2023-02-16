@@ -393,9 +393,9 @@ def displayproduct(id):
         prod['gender'] = product.gen.name
         prod['quantity'] = quantityStatus.quantity
         prod['sold'] = sold.quantity
-
-        prod['colors'] = [color.color for color in Color.query.filter_by(product=product.id).all()]
-        prod['sizes'] = [size.size for size in Size.query.filter_by(product=product.id).all()]
+    
+        prod['colors'] = [color.to_dict(exclude="product") for color in Color.query.filter_by(product=product.id).all()]
+        prod['sizes'] = [size.to_dict(exclude="product") for size in Size.query.filter_by(product=product.id).all()]
 
         return Response(
             data=prod,

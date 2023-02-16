@@ -145,9 +145,15 @@ export default function Checkout() {
                             </div>
                         </div>
                         <div className="flex flex-col gap-y-2">
-                            <div className="grid grid-cols-6 bg-white px-10 py-3">
+                            <div className="grid grid-cols-8 bg-white px-10 py-3">
                                 <div className="col-span-3">
                                     <p className="text-xl font-medium">Products Ordered</p>
+                                </div>
+                                <div className="flex items-center justify-center">
+                                    <p>Color</p>
+                                </div>
+                                <div className="flex items-center justify-center">
+                                    <p>Size</p>
                                 </div>
                                 <div className="flex items-center justify-center">
                                     <p>Price</p>
@@ -163,7 +169,7 @@ export default function Checkout() {
                             {isLoaded ? products.map((product) => {
                                 return (
                                     <div className="py-3 px-10 bg-white w-full" key={product.id}>
-                                        <div className="grid grid-cols-6 bg-white">
+                                        <div className="grid grid-cols-8 bg-white">
                                             <div className="col-span-3 flex flex-col gap-y-2">
                                                 <p className="text-sm text-gray-600">{product.shop}</p>
                                                 <div className="flex flex-row gap-x-5 items-center">
@@ -172,6 +178,12 @@ export default function Checkout() {
                                                     </div>
                                                     <p className="text-xl">{product.productName}</p>
                                                 </div>
+                                            </div>
+                                            <div className="flex items-center justify-center">
+                                                <p>{product.color}</p>
+                                            </div>
+                                            <div className="flex items-center justify-center">
+                                                <p>{product.size}</p>
                                             </div>
                                             <div className="flex items-center justify-center">
                                                 <p>₱ {product.price.toLocaleString()}</p>

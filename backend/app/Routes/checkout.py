@@ -1,6 +1,6 @@
 from flask import request
 from app import app
-from app.models import Cart, CartItem, Product,  Order, OrderStatus
+from app.models import Cart, CartItem, Product,  Order, OrderStatus, Color, Size
 from flask_login import login_required, current_user
 from app.Components.response import Response
 
@@ -26,11 +26,13 @@ def checkout():
             status = OrderStatus.query.filter_by(name="PENDING").first()
             for item in cart_items:
                 product = Product.query.get(item.product)
-
+    
                 order = Order(
                     user=current_user.id,
                     product=product.id,
                     quantity=item.quantity,
+                    color=item.color,
+                    size=item.size,
 
                     fullname=fullname,
                     number=num,
