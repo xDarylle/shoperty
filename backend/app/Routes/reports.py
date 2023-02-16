@@ -2,7 +2,7 @@ from app import app, db
 from flask_login import login_required, current_user
 from flask import request
 from app.Components.response import Response
-from app.models import Order, Shop, Product, Sold, OrderStatus, User
+from app.models import Order, Shop, Product, Sold, OrderStatus, User, Category
 from datetime import datetime
 
 DATES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -39,12 +39,24 @@ def reports():
                 latestOrders.append(detail)
 
         sales = [{'date': date, 'sales': 0} for date in DATES]
+
         for order in orders:
             if order.status == OrderStatus.query.filter_by(name='COMPLETE').first().id:
                 date = order.dateCreated.strftime('%b')
-                price = Product.query.get(order.product).price * order.quantity
+                product = Product.query.get(order.product)
+                price = product.price * order.quantity
                 for sale in sales:
                     if sale['date'] == date:
+                        sale['sales'] += price
+
+        categories = Category.query.filter_by(shop=shop.id).all()
+        sales_by_category = [{'sales': 0, 'category': category.name} for category in categories]
+        for order in orders:
+            if order.status == OrderStatus.query.filter_by(name='COMPLETE').first().id:
+                product = Product.query.get(order.product)
+                price = product.price * order.quantity
+                for sale in sales_by_category:
+                    if sale['category'] == Category.query.get(product.category).name:
                         sale['sales'] += price
 
         topSelling = []
@@ -61,6 +73,7 @@ def reports():
         data['totalProducts'] = len(products)
         data['latestOrders'] = latestOrders
         data['sales'] = sales
+        data['sales_by_category'] = sales_by_category
         data['topSelling'] = topSelling
 
         return Response(

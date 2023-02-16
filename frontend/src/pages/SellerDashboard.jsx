@@ -12,6 +12,7 @@ export default function SellerDashboard() {
   const [totalProducts, setTotalProducts] = useState(0)
   const [latestOrders, setLatestOrders] = useState([])
   const [sales, setSales] = useState([])
+  const [salesByCategory, setSalesByCat] = useState([])
   const [topSelling, setTopSelling] = useState([])
 
 
@@ -26,6 +27,7 @@ export default function SellerDashboard() {
         setTotalProducts(data.data.totalProducts)
         setLatestOrders(data.data.latestOrders)
         setSales(data.data.sales)
+        setSalesByCat(data.data.sales_by_category)
         setTopSelling(data.data.topSelling)
       }
     }
@@ -119,7 +121,8 @@ export default function SellerDashboard() {
           <div className="col-span-2 rounded h-96 drop-shadow bg-white p-3">
             <p className="font-medium text-gray-600 mb-5">Sales Statistics</p>
             {sales ?
-              <Chart data={sales} xAxis="date" yAxis="sales" />
+              //<Chart data={sales} xAxis="date" yAxis="sales" />
+              <Chart data={salesByCategory} xAxis="category" yAxis="sales" />
               : ""
             }
 
