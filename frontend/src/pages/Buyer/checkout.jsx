@@ -27,6 +27,15 @@ export default function Checkout() {
 
     const [{ fullname, number, address }, setState] = useState(initialState)
 
+    const [selectedPayment, setSelectedPayment] = useState(1)
+    const payment_mode = [
+        {id: 1, name: "Cash on Delivery", active: true},
+        {id: 2, name: "GCash", active: false},
+        {id: 3, name: "Card", active: false},
+        {id: 4, name: "Paypal", active: false},
+        {id: 5, name: "Bank transfer", active: false},
+    ]
+
     const onChange = (event) => {
         const { name, value } = event.target
         setState((prevState) => ({ ...prevState, [name]: value }))
@@ -62,7 +71,7 @@ export default function Checkout() {
             }
         }
 
-        const getUser = async() => {
+        const getUser = async () => {
             try {
                 const response = await axiosRequest.get(user_url)
                 const { status, data } = response
@@ -81,7 +90,7 @@ export default function Checkout() {
 
     const onSubmit = async (event) => {
         event.preventDefault()
-        const datas = {fullname, number, address}
+        const datas = { fullname, number, address }
         const response = await axiosRequest.post(checkout_url, datas)
         const { status } = response
         if (status === 201) {
@@ -90,9 +99,9 @@ export default function Checkout() {
                 icon: "success",
             }).then((result) => {
                 if (result.isConfirmed) {
-                  navigate('/mypurchase')
+                    navigate('/mypurchase')
                 }
-              })
+            })
         }
     }
 
@@ -123,7 +132,7 @@ export default function Checkout() {
                                 <div className="flex flex-row justify-between items-center">
                                     <p className="w-32">Number:</p>
                                     <InputField
-                                        id = "quantity"
+                                        id="quantity"
                                         type="number"
                                         name="number"
                                         value={number}
@@ -142,6 +151,20 @@ export default function Checkout() {
                                     />
                                 </div>
 
+                            </div>
+                        </div>
+                        <div className="bg-white px-10 py-5">
+                            <p className="text-xl font-medium">Payment Method</p>
+                            <div className="flex flex-row gap-x-4 mt-2">
+                                {
+                                    payment_mode.map(mode => {
+                                        return <button type="button" key={mode.id} 
+                                            onClick={() => {if(mode.active) setSelectedPayment(mode.id)}} 
+                                            className={`py-7 rounded w-full text-center mt-2 ${mode.id === selectedPayment? "bg-primary text-white": "border-primary/50 border text-primary/50"}`}>
+                                            {mode.name}
+                                        </button>
+                                    })
+                                }
                             </div>
                         </div>
                         <div className="flex flex-col gap-y-2">
