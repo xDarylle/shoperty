@@ -57,6 +57,18 @@ export default function Orders() {
       width: 150,
     },
     {
+      field: "color",
+      headerName: "Color",
+      type: "string",
+      width: 150,
+    },
+    {
+      field: "size",
+      headerName: "Size",
+      type: "string",
+      width: 150,
+    },
+    {
       field: "price",
       headerName: "Price",
       type: "number",
