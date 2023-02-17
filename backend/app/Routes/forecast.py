@@ -97,10 +97,8 @@ def forecast():
         for i, date in enumerate(df['Date']):
             index = df['Date'].index.start + i
             d = date.strftime("%b %d")
-            if i == len(df['Date']) - 1:
-                sales.append({'date': "Today", 'sales': y.loc[index], 'predicted': y.loc[index]})
-            else:
-                sales.append({'date': d, 'sales': y.loc[index]})
+            
+            sales.append({'date': d, 'sales': y.loc[index], 'predicted': y_pred.loc[index]})
 
         predicted = {'predicted': round(predicted.values[0], 2), 'date': "Tomorrow"}
         sales.append(predicted)

@@ -15,10 +15,17 @@ export default function ForecastChart({ data, y1, y2, xAxis }) {
         <div className="custom-tooltip">
           {payload.map((i, index) => {
             if (index === 0) {
+              console.log(i)
               return (
-                <div className="bg-orange-500/[0.9] rounded p-2 flex flex-col items-center" key={i.value}>
-                  <p className="label text-white">₱ {i.value.toLocaleString()}</p>
-                  <p className="text-white/[.9] text-sm">{label}</p>
+                <div className="bg-white border rounded p-3 flex flex-col" key={i.value}>
+                  <div className="flex flex-row justify-between items-center mb-2">
+                    <p className="font-medium text-black/[.7]">Sales</p>
+                    <p className="text-black/[.7] text-sm">{label}</p>
+                  </div>
+                  {i.payload.sales ?
+                    <p className="text-base text-[#8884d8]">Actual: ₱{i.payload.sales.toLocaleString()}</p>
+                    : ""}
+                  <p className="text-base text-[#51b877]">Predicted: ₱{i.payload.predicted.toLocaleString()}</p>
                 </div>
               )
             }
