@@ -4,6 +4,11 @@ import { useNavigate, useSearchParams } from "react-router-dom"
 
 const navItems = [
     {
+        id: 0,
+        title: "All",
+        name: "all",
+    },
+    {
         id: 1,
         title: "Men",
         name: "men",
@@ -33,10 +38,7 @@ export default function HomeNavbar() {
     const navigate = useNavigate()
 
     const click = (name) => {
-        if (filter === name) {
-            navigate(`${url}&page=1`)
-        }
-        else {
+        if(filter !== name){
             navigate(`${url}filter=${name}&page=1`)
         }
     }
