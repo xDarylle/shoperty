@@ -14,7 +14,7 @@ export default function SellerDashboard() {
   const [sales, setSales] = useState([])
   const [salesByCategory, setSalesByCat] = useState([])
   const [topSelling, setTopSelling] = useState([])
-  const [sales_base, setSalesBase] = useState("Category")
+  const [sales_base, setSalesBase] = useState(1)
   
   const salesBases = [
     {id: 1, name:"Category"},
@@ -129,7 +129,7 @@ export default function SellerDashboard() {
               <div className="flex flex-row gap-x-1 align-start">
                 {salesBases.map(base => {
                   return <button onClick={()=>{setSalesBase(base.id)}} 
-                  className={`text-sm p-2 border rounded ${sales_base==base.id? "bg-amber-600 text-white": "text-black/80"}`}>{base.name}</button>
+                  className={`text-sm p-2 border rounded ${sales_base===base.id? "bg-orange-500/[0.9] text-white": "text-black/80"}`}>{base.name}</button>
                 })}
               </div>
             </div>
