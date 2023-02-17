@@ -1,6 +1,6 @@
 from flask import request
 from app import app
-from app.models import Shop, Product, Gender, Sold, Category, QuantityStatus, Order, User, Cart, CartItem, Color, Size
+from app.models import Shop, Product, Gender, Sold, Category, QuantityStatus, Order, User, Cart, CartItem, Color, Size, Rating
 from flask_login import login_required, current_user
 from app.Components.response import Response
 from app.Components.image_handler import save_img, delete_img
@@ -100,6 +100,10 @@ def products():
             prod['colors'] = [color.color for color in Color.query.filter_by(product=product.id).all()]
             prod['sizes'] = [size.size for size in Size.query.filter_by(product=product.id).all()]
 
+            ratings = [r.rating for r in Rating.query.filter_by(product=product.id).all()]
+            prod['ratings'] = sum(ratings)/len(ratings) if ratings else 0
+            prod['ratings_users'] = len(ratings)
+
             res.append(prod)
 
         return Response(
@@ -145,6 +149,10 @@ def product(id):
             prod['gender'] = product.gen.name
             prod['colors'] = [color.color for color in Color.query.filter_by(product=product.id).all()]
             prod['sizes'] = [size.size for size in Size.query.filter_by(product=product.id).all()]
+
+            ratings = [r.rating for r in Rating.query.filter_by(product=product.id).all()]
+            prod['ratings'] = sum(ratings)/len(ratings) if ratings else 0
+            prod['ratings_users'] = len(ratings)
 
             return Response(
                 status=200,
@@ -372,6 +380,10 @@ def getproducts():
             prod['quantity'] = quantityStatus.quantity
             prod['sold'] = sold.quantity
 
+            ratings = [r.rating for r in Rating.query.filter_by(product=product.id).all()]
+            prod['ratings'] = sum(ratings)/len(ratings) if ratings else 0
+            prod['ratings_users'] = len(ratings)
+
             prods.append(prod)
 
         return Response(
@@ -393,7 +405,11 @@ def displayproduct(id):
         prod['gender'] = product.gen.name
         prod['quantity'] = quantityStatus.quantity
         prod['sold'] = sold.quantity
-    
+        
+        ratings = [r.rating for r in Rating.query.filter_by(product=product.id).all()]
+        prod['ratings'] = sum(ratings)/len(ratings) if ratings else 0
+        prod['ratings_users'] = len(ratings)
+
         prod['colors'] = [color.to_dict(exclude="product") for color in Color.query.filter_by(product=product.id).all()]
         prod['sizes'] = [size.to_dict(exclude="product") for size in Size.query.filter_by(product=product.id).all()]
 
@@ -401,3 +417,36 @@ def displayproduct(id):
             data=prod,
             status=200
         )
+
+@login_required
+@app.route('/api/v1/product/ratings', methods=['POST', 'PUT'])
+def ratings():
+    if request.method == 'POST':
+        data = request.get_json()
+        product = Product.query.get(data['product'])
+
+        rating = Rating(
+            product=product.id,
+            user=current_user.id,
+            rating=data['rating']
+        )
+
+        rating.create()
+
+        return Response(
+            status=201,
+        )
+
+    if request.method == 'PUT':
+        data = request.get_json()
+        product = Product.query.get(data['product'])
+
+        rating = Rating.query.filter_by(product=product.id, user=current_user.id).first()
+        
+        rating.rating = data['rating']
+        rating.update()
+
+        return Response(
+            status=200,
+        )
+

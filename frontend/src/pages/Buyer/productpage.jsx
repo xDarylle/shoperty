@@ -2,7 +2,7 @@ import React from "react"
 import { useState, useEffect } from "react"
 import { axiosRequest } from "api"
 import { useLocation } from "react-router-dom"
-import { Navbar, FeatureProduct, Footer, Seller } from "components"
+import { Navbar, FeatureProduct, Footer, Seller, StarRating } from "components"
 import { Plus, Minus, ShoppingCart } from "react-feather"
 import swal from "sweetalert2"
 
@@ -46,7 +46,7 @@ export default function ProductPage() {
     const addCart = async (event) => {
         event.preventDefault()
         try {
-            if(!selectedColor || !selectedSize) {
+            if (!selectedColor || !selectedSize) {
                 swal.fire({
                     title: "Please select color and size",
                     icon: "warning"
@@ -84,9 +84,14 @@ export default function ProductPage() {
                             <div className="flex flex-col h-full text-gray-800 gap-y-5">
                                 <div className="flex flex-row gap-y-2 justify-between">
                                     <div className="text-4xl font-medium">{product.productName}</div>
-                                    <div className="flex flex-row gap-x-2 items-center text-sm">
-                                        <p className="font-medium">{product.sold}</p>
-                                        <p className="text-gray-500">Sold</p>
+                                    <div className="flex flex-col gap-y-2 w-32 ">
+                                        <StarRating percent={product.ratings} />
+                                        <div className="flex flex-row gap-x-2 justify-between text-sm px-1">
+                                            <p className="font-medium">{product.ratings_users}</p>
+                                            <p className="text-gray-500">Ratings</p>
+                                            <p className="font-medium">{product.sold}</p>
+                                            <p className="text-gray-500">Sold</p>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="text-4xl font-medium py-4 px-6 bg-gray-100 text-primary">₱{product.price.toLocaleString()}</div>
@@ -111,7 +116,7 @@ export default function ProductPage() {
                                     <div className="text-lg font-medium mr-5 text-gray-700">Colors</div>
                                     <div className="flex flex-row gap-x-2">
                                         {product.colors.map(color => {
-                                            return <button key={color.id} onClick={()=> setSelectedColor(color.id)} className={`border px-4 py-2 text-sm ${selectedColor===color.id? "bg-primary text-white": "bg-gray-100 text-black/80"}`}>{color.color}</button>
+                                            return <button key={color.id} onClick={() => setSelectedColor(color.id)} className={`border px-4 py-2 text-sm ${selectedColor === color.id ? "bg-primary text-white" : "bg-gray-100 text-black/80"}`}>{color.color}</button>
                                         })}
                                     </div>
                                 </div>
@@ -119,7 +124,7 @@ export default function ProductPage() {
                                     <div className="text-lg font-medium mr-5 text-gray-700">Sizes</div>
                                     <div className="flex flex-row gap-x-2">
                                         {product.sizes.map(size => {
-                                            return <button key={size.id} onClick={()=> setSelectedSize(size.id)} className={`border px-4 py-2 text-sm ${selectedSize===size.id? "bg-primary text-white": "bg-gray-100 text-black/80"}`}>{size.size}</button>
+                                            return <button key={size.id} onClick={() => setSelectedSize(size.id)} className={`border px-4 py-2 text-sm ${selectedSize === size.id ? "bg-primary text-white" : "bg-gray-100 text-black/80"}`}>{size.size}</button>
                                         })}
                                     </div>
                                 </div>

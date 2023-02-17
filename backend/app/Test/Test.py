@@ -1,4 +1,4 @@
-from app.models import Sold, User, Shop, Product, Gender, Category, QuantityStatus, Color, Size, Order, OrderStatus
+from app.models import Sold, User, Shop, Product, Gender, Category, QuantityStatus, Color, Size, Order, OrderStatus, Rating
 from werkzeug.security import generate_password_hash
 import os
 from PIL import Image
@@ -181,6 +181,9 @@ def purchaseProduct(id, perday, start, end):
                 sold = Sold.query.filter_by(product=product).first()
                 sold.quantity += quantity
                 sold.update()
+
+                rating = Rating(product=product, user=id, rating=random.randint(0, 5))
+                rating.create()
 
     print('Done!!!')
 
