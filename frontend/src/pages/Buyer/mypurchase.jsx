@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Navbar, Footer } from 'components'
+import { Navbar, Footer, RateProduct } from 'components'
 import { axiosRequest } from "api"
 import { Frown, MapPin, ArrowUp, ArrowDown } from "react-feather"
 import swal from "sweetalert2"
@@ -22,6 +22,8 @@ export default function MyPurchase() {
     const [states, setState] = useState(initialState)
     const [button, setButton] = useState('dateCreated')
     const [paginate, setPaginate] = useState([])
+    const [openRating, setOpenRating] = useState(false)
+    const [selectedProduct, setSelectedProduct] = useState(undefined)
 
     useEffect(() => {
         const getPurchases = async () => {
@@ -61,7 +63,7 @@ export default function MyPurchase() {
                 })
                 const updated_products = products.map((product) => {
                     if (product.orderID === orderID) {
-                        product.status = "COMPLETE"
+                        product.status.name = "COMPLETE"
                     }
                     return product
                 })
@@ -125,6 +127,9 @@ export default function MyPurchase() {
         <>
             <Navbar />
             <div className="flex flex-col w-full text-gray-800">
+                {selectedProduct ?
+                    <RateProduct status={openRating ? "flex" : "hidden"} setStatus={setOpenRating} props={selectedProduct} />
+                    : ""}
                 <div className="font-bold text-3xl bg-white px-10 py-5">My Purchase ({products ? products.length : 0})</div>
                 <div className="w-full py-2 px-5 bg-gray-100 flex flex-col gap-y-3 ">
                     <div className="flex flex-col gap-y-2 mb-10">
@@ -236,6 +241,13 @@ export default function MyPurchase() {
                                         {product.status.name === "SHIPPED" ?
                                             <button onClick={() => { receive(product.orderID) }} className="flex justify-center items-center bg-primary text-white px-4 py-2 rounded mt-2 md:mt-0">
                                                 <span>Order Received</span>
+                                            </button>
+                                            : ""
+                                        }
+
+                                        {product.status.name === "COMPLETE" ?
+                                            <button onClick={() => { setOpenRating(true); setSelectedProduct(product) }} className="flex justify-center items-center bg-primary text-white px-4 py-2 rounded mt-2 md:mt-0">
+                                                <span>Rate Product</span>
                                             </button>
                                             : ""
                                         }

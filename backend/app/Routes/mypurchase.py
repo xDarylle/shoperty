@@ -1,6 +1,6 @@
 from flask import request
 from app import app
-from app.models import Product, Order, OrderStatus, Shop, Color, Size
+from app.models import Product, Order, OrderStatus, Shop, Color, Size, Rating
 from flask_login import login_required, current_user
 from app.Components.response import Response
 
@@ -21,6 +21,7 @@ def mypurchase():
             product = Product.query.get(order.product)
             status = OrderStatus.query.get(order.status)
             shop = Shop.query.get(product.shop)
+            rating = Rating.query.filter_by(product=product.id,user=current_user.id).first()
 
             prod = product.to_dict(exclude=['description', 'shop', 'dateCreated', 'dateUpdated'])
             prod['category'] = product.cat.name
@@ -36,6 +37,7 @@ def mypurchase():
             prod['total'] = order.quantity * product.price
             prod['color'] = Color.query.get(order.color).color
             prod['size'] = Size.query.get(order.size).size
+            prod['rating'] = rating.rating if rating else 0
 
             products.append(prod)
 

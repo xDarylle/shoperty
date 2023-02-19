@@ -425,28 +425,21 @@ def ratings():
         data = request.get_json()
         product = Product.query.get(data['product'])
 
-        rating = Rating(
-            product=product.id,
-            user=current_user.id,
-            rating=data['rating']
-        )
-
-        rating.create()
-
-        return Response(
-            status=201,
-        )
-
-    if request.method == 'PUT':
-        data = request.get_json()
-        product = Product.query.get(data['product'])
-
         rating = Rating.query.filter_by(product=product.id, user=current_user.id).first()
-        
-        rating.rating = data['rating']
-        rating.update()
+
+        if rating:
+            rating.rating = data['rating']
+            rating.update()
+
+        else:
+            rating = Rating(
+                product=product.id,
+                user=current_user.id,
+                rating=data['rating']
+            )
+
+            rating.create()
 
         return Response(
             status=200,
         )
-
