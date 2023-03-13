@@ -123,9 +123,29 @@ export default function MyPurchase() {
         setPaginate(sorted.slice(0, paginate.length))
     }
 
+    const [user, setUser] = useState("")
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const url = '/api/v1/user'
+                const response = await axiosRequest.get(url)
+
+                const { status, data } = response
+                if (status === 200) {
+                    const userData = data.data
+                    setUser(userData)
+                }
+            }
+            catch (e) {
+
+            }
+        }
+        getUser()
+    }, [])
+
     return (
         <>
-            <Navbar />
+            <Navbar isLoggedin={user ? true : false} />
             <div className="flex flex-col w-full text-gray-800">
                 {selectedProduct ?
                     <RateProduct status={openRating ? "flex" : "hidden"} setStatus={setOpenRating} props={selectedProduct} />

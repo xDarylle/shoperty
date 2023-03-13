@@ -50,13 +50,29 @@ export default function MyAccount() {
         event.preventDefault()
     }
 
-    /**
-     * InputField field and select field should be reusable
-     */
+    const [user, setUser] = useState("")
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const url = '/api/v1/user'
+                const response = await axiosRequest.get(url)
+
+                const { status, data } = response
+                if (status === 200) {
+                    const userData = data.data
+                    setUser(userData)
+                }
+            }
+            catch (e) {
+
+            }
+        }
+        getUser()
+    }, [])
 
     return (
         <>
-            <Navbar />
+            <Navbar isLoggedin={user ? true : false} />
             <div className="px-10 py-5 flex flex-col items-center">
                 <div className="font-bold text-3xl bg-white py-5">My Account</div>
                 <img

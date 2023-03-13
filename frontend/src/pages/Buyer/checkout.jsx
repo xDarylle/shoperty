@@ -29,11 +29,11 @@ export default function Checkout() {
 
     const [selectedPayment, setSelectedPayment] = useState(1)
     const payment_mode = [
-        {id: 1, name: "Cash on Delivery", active: true},
-        {id: 2, name: "GCash", active: false},
-        {id: 3, name: "Card", active: false},
-        {id: 4, name: "Paypal", active: false},
-        {id: 5, name: "Bank transfer", active: false},
+        { id: 1, name: "Cash on Delivery", active: true },
+        { id: 2, name: "GCash", active: false },
+        { id: 3, name: "Card", active: false },
+        { id: 4, name: "Paypal", active: false },
+        { id: 5, name: "Bank transfer", active: false },
     ]
 
     const onChange = (event) => {
@@ -105,9 +105,29 @@ export default function Checkout() {
         }
     }
 
+    const [user, setUser] = useState("")
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const url = '/api/v1/user'
+                const response = await axiosRequest.get(url)
+
+                const { status, data } = response
+                if (status === 200) {
+                    const userData = data.data
+                    setUser(userData)
+                }
+            }
+            catch (e) {
+
+            }
+        }
+        getUser()
+    }, [])
+
     return (
         <>
-            <Navbar />
+            <Navbar isLoggedin={user ? true : false} />
             <div className="flex flex-col w-full text-gray-800">
                 <form onSubmit={(event) => onSubmit(event)}>
                     <div className="font-bold text-3xl bg-white px-10 py-5">Checkout</div>
@@ -158,9 +178,9 @@ export default function Checkout() {
                             <div className="flex flex-row gap-x-4 mt-2">
                                 {
                                     payment_mode.map(mode => {
-                                        return <button type="button" key={mode.id} 
-                                            onClick={() => {if(mode.active) setSelectedPayment(mode.id)}} 
-                                            className={`py-7 rounded w-full text-center mt-2 ${mode.id === selectedPayment? "bg-primary text-white": "border-primary/50 border text-primary/50"}`}>
+                                        return <button type="button" key={mode.id}
+                                            onClick={() => { if (mode.active) setSelectedPayment(mode.id) }}
+                                            className={`py-7 rounded w-full text-center mt-2 ${mode.id === selectedPayment ? "bg-primary text-white" : "border-primary/50 border text-primary/50"}`}>
                                             {mode.name}
                                         </button>
                                     })

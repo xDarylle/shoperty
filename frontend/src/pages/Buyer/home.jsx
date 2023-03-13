@@ -25,9 +25,6 @@ export default function Home() {
 
       } catch (e) {
         const { status } = e.response
-        if (status === 401) {
-          navigate('/login')
-        }
 
         if (status === 500) {
           navigate('/404')
@@ -39,22 +36,16 @@ export default function Home() {
 
   return (
     <>
-      {user ?
-        <>
-          <Navbar />
-          <HomeNavbar />
-          <Banner />
-          <div className="flex flex-col gap-y-5 mb-5">
-            <FeatureProduct filter={'recommended'} name={'Recommended Products'} />
-            <FeatureProduct filter={'latest'} name={'Latest Products'} />
-            <FeatureProduct filter={'shops'} name={'Browse Local Shops'} />
-            <BrowseProducts />
-          </div>
-          <Footer />
-        </>
-        : null
-      }
-
+      <Navbar isLoggedin={user ? true : false} />
+      <HomeNavbar />
+      <Banner />
+      <div className="flex flex-col gap-y-5 mb-5">
+        {user ? <FeatureProduct filter={'recommended'} name={'Recommended Products'} /> : ""}
+        <FeatureProduct filter={'latest'} name={'Latest Products'} />
+        <FeatureProduct filter={'shops'} name={'Browse Local Shops'} />
+        <BrowseProducts />
+      </div>
+      <Footer />
     </>
   )
 }

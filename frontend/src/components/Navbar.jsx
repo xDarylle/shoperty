@@ -4,30 +4,7 @@ import { Link } from "react-router-dom"
 import { Search, Notification } from 'components'
 import { axiosRequest } from "api"
 
-const navItems = [
-    {
-        id: 1,
-        title: "Home",
-        path: "/",
-    },
-    {
-        id: 2,
-        title: "My Purchase",
-        path: "/mypurchase",
-    },
-    {
-        id: 3,
-        title: "My Account",
-        path: "/myaccount",
-    },
-    {
-        id: 4,
-        title: "Logout",
-        path: "/logout",
-    },
-]
-
-export default function Navbar({ refresh }) {
+export default function Navbar({ refresh, isLoggedin }) {
     const [isOpen, setOpen] = useState(false)
     const [length, setLength] = useState(0)
     const openMenu = () => {
@@ -35,6 +12,42 @@ export default function Navbar({ refresh }) {
     }
 
     const cart_url = "/api/v1/user/cart"
+
+    const navItems = [
+        {
+            id: 1,
+            title: "Home",
+            path: "/",
+        },
+        {
+            id: 2,
+            title: "My Purchase",
+            path: "/mypurchase",
+        },
+        {
+            id: 3,
+            title: "My Account",
+            path: "/myaccount",
+        },
+        {
+            id: 4,
+            title: isLoggedin ? "Logout" : "Login",
+            path: isLoggedin ? "/logout" : "/login",
+        },
+    ]
+
+    const navItems2 = [
+        {
+            id: 1,
+            title: "Home",
+            path: "/",
+        },
+        {
+            id: 2,
+            title: "Login",
+            path: "/login",
+        },
+    ]
 
     useEffect(() => {
         const getCart = async () => {
@@ -70,17 +83,29 @@ export default function Navbar({ refresh }) {
                     <div className={`${isOpen ? "" : "hidden"} w-full md:block md:w-auto py-4 md:py-0`}>
                         <Search className="md:hidden visible" hidden={true} />
                         <ul className="mt-3 md:mt-0 flex flex-col gap-y-4 md:gap-y-0 md:flex-row text-2xl md:text-base items-center">
-                            {navItems.map(type => {
-                                return (
-                                    <li key={type.id} className="p-4 md:w-max w-full text-center md:active:bg-transparent active:bg-gray-100 md:hover:bg-transparent hover:bg-gray-100 rounded-lg">
-                                        <Link to={type.path}>
-                                            <span className="text-gray-700 rounded md:bg-transparent md:p-0 md:hover:text-primary" aria-current="page">{type.title}</span>
-                                        </Link>
-                                    </li>
-                                )
-                            })}
+                            {isLoggedin ?
+                                navItems.map(type => {
+                                    return (
+                                        <li key={type.id} className="p-4 md:w-max w-full text-center md:active:bg-transparent active:bg-gray-100 md:hover:bg-transparent hover:bg-gray-100 rounded-lg">
+                                            <Link to={type.path}>
+                                                <span className="text-gray-700 rounded md:bg-transparent md:p-0 md:hover:text-primary" aria-current="page">{type.title}</span>
+                                            </Link>
+                                        </li>
+                                    )
+                                })
+                                : 
+                                navItems2.map(type => {
+                                    return (
+                                        <li key={type.id} className="p-4 md:w-max w-full text-center md:active:bg-transparent active:bg-gray-100 md:hover:bg-transparent hover:bg-gray-100 rounded-lg">
+                                            <Link to={type.path}>
+                                                <span className="text-gray-700 rounded md:bg-transparent md:p-0 md:hover:text-primary" aria-current="page">{type.title}</span>
+                                            </Link>
+                                        </li>
+                                    )
+                                })
+                            }
                             <li className={`px-4 hidden md:block ${length ? "mt-[-10px]" : ""}`}>
-                                <Link to="/cart">
+                                <Link to= {isLoggedin? "/cart" : "/login"}>
                                     {length ?
                                         <div className="p-2 h-3 rounded-full bg-red-600 text-white text-[8px] flex items-center justify-center relative top-2 left-3">
                                             <p>{length}</p>

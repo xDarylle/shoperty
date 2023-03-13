@@ -15,10 +15,10 @@ export default function Logout() {
                 const { status } = response
     
                 if (status === 200) {
-                    navigate('/login')
+                    navigate('/')
                 }
             } catch (e) {
-                navigate('/login')
+                navigate('/')
             }
         }
 

@@ -1,7 +1,7 @@
 import React from "react"
 import { useState, useEffect } from "react"
 import { axiosRequest } from "api"
-import { useLocation } from "react-router-dom"
+import { useLocation, useNavigate } from "react-router-dom"
 import { Navbar, FeatureProduct, Footer, Seller, StarRating } from "components"
 import { Plus, Minus, ShoppingCart } from "react-feather"
 import swal from "sweetalert2"
@@ -19,6 +19,8 @@ export default function ProductPage() {
     const [selectedColor, setSelectedColor] = useState("")
     const [selectedSize, setSelectedSize] = useState("")
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         const getProduct = async () => {
             const response = await axiosRequest.get(`${url}/${prodID}`)
@@ -31,6 +33,27 @@ export default function ProductPage() {
         }
         getProduct()
     }, [prodID])
+
+    const [user, setUser] = useState("")
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const url = '/api/v1/user'
+                const response = await axiosRequest.get(url)
+
+                const { status, data } = response
+                if (status === 200) {
+                    const userData = data.data
+                    setUser(userData)
+                }
+            }
+            catch (e) {
+
+            }
+        }
+        getUser()
+    }, [])
+
 
     const left = () => {
         if (quantity > 1 && product.quantity > 0)
@@ -66,14 +89,17 @@ export default function ProductPage() {
                 })
             }
         }
-        catch {
-
+        catch (e) {
+            const { status } = e.response
+            if (status === 401) {
+                navigate('/login')
+            }
         }
     }
 
     return (
         <>
-            <Navbar refresh={refresh} />
+            <Navbar refresh={refresh} isLoggedin={user ? true : false} />
             <section className="bg-gray-200 w-100 p-3">
                 <div className="bg-white px-3 py-4 flex flex-col md:flex-row mb-3">
                     <div className="w-full md:w-3/6 overflow-hidden">

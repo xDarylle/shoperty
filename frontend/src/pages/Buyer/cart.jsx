@@ -15,6 +15,26 @@ export default function Cart() {
     const [empty, setEmpty] = useState(true)
     const [refresh, setRefresh] = useState(false)
 
+    const [user, setUser] = useState("")
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const url = '/api/v1/user'
+                const response = await axiosRequest.get(url)
+
+                const { status, data } = response
+                if (status === 200) {
+                    const userData = data.data
+                    setUser(userData)
+                }
+            }
+            catch (e) {
+
+            }
+        }
+        getUser()
+    }, [])
+
     useEffect(() => {
         const getCart = async () => {
             const response = await axiosRequest.get(cart_url)
@@ -76,7 +96,7 @@ export default function Cart() {
 
     return (
         <>
-            <Navbar refresh={refresh} />
+            <Navbar refresh={refresh} isLoggedin={user ? true : false} />
             <div className="flex flex-col md:flex-row w-screen bg-white text-gray-800">
                 <div className="md:w-2/3 p-8">
                     <p className="font-bold text-3xl mb-5">Cart ({products ? products.length : 0})</p>

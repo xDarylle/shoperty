@@ -4,8 +4,8 @@ from app.models import Cart, CartItem, Product, Shop, Color, Size
 from flask_login import login_required, current_user
 from app.Components.response import Response
 
-@login_required
 @app.route('/api/v1/user/cart', methods=['POST', 'GET'])
+@login_required
 def cart():
     if current_user.userType == 'Seller':
         return Response(

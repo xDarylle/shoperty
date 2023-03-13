@@ -88,9 +88,29 @@ export default function Shoppage() {
         setLength(value)
     }
 
+    const [user, setUser] = useState("")
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const url = '/api/v1/user'
+                const response = await axiosRequest.get(url)
+
+                const { status, data } = response
+                if (status === 200) {
+                    const userData = data.data
+                    setUser(userData)
+                }
+            }
+            catch (e) {
+
+            }
+        }
+        getUser()
+    }, [])
+
     return (
         <>
-            <Navbar />
+            <Navbar isLoggedin={user ? true : false} />
             <section className="bg-gray-200">
                 <div className="w-full md:p-2 p-1 drop-shadow">
                     <div className="bg-white">

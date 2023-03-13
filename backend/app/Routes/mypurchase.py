@@ -46,8 +46,8 @@ def mypurchase():
             data=products
         )
 
-@login_required
 @app.route('/api/v1/mypurchase/notification', methods=['GET'])
+@login_required
 def notification():
     if current_user.userType == 'Seller':
         return Response(

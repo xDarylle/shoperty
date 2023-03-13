@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import { HomeNavbar, Navbar, DisplayProducts, DisplayShops, Footer } from 'components'
 import { useSearchParams } from "react-router-dom"
 import { ChevronLeft, ChevronRight } from "react-feather"
+import { axiosRequest } from "api"
 
 export default function Products() {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -60,9 +61,9 @@ export default function Products() {
         }
 
         let params
-        if (filter) params = {'filter': filter, 'page': currentPage}
-        if (keyword) params = {'keyword': keyword, 'page': currentPage}
-        if (filter && keyword) params = {'filter': filter, 'keyword': keyword, 'page': currentPage}
+        if (filter) params = { 'filter': filter, 'page': currentPage }
+        if (keyword) params = { 'keyword': keyword, 'page': currentPage }
+        if (filter && keyword) params = { 'filter': filter, 'keyword': keyword, 'page': currentPage }
 
         setSearchParams(params)
     }, [currentPage, filter, keyword, setSearchParams, length])
@@ -81,9 +82,29 @@ export default function Products() {
         setLength(value)
     }
 
+    const [user, setUser] = useState("")
+    useEffect(() => {
+        const getUser = async () => {
+            try {
+                const url = '/api/v1/user'
+                const response = await axiosRequest.get(url)
+
+                const { status, data } = response
+                if (status === 200) {
+                    const userData = data.data
+                    setUser(userData)
+                }
+            }
+            catch (e) {
+
+            }
+        }
+        getUser()
+    }, [])
+
     return (
         <>
-            <Navbar />
+            <Navbar isLoggedin={user ? true : false} />
             <HomeNavbar />
             <section className="bg-gray-200">
                 <div className="w-full flex justify-center gap-x-5">
@@ -91,10 +112,10 @@ export default function Products() {
                     {filter ? <p className="text-2xl text-gray-700 py-5">{filter.toLocaleUpperCase()}</p> : null}
                 </div>
                 <div className="md:py-4 flex justify-center">
-                {filter === 'shops'
-                    ? <DisplayShops className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4" page={currentPage} set={set} filter={null}/>
-                    : <DisplayProducts className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4" page={currentPage} set={set} filter={null} />
-                }
+                    {filter === 'shops'
+                        ? <DisplayShops className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4" page={currentPage} set={set} filter={null} />
+                        : <DisplayProducts className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4" page={currentPage} set={set} filter={null} />
+                    }
                 </div>
                 {length ?
                     <div className="flex flex-row justify-center w-full text-gray-900/50 text-lg md:text-xl gap-x-3 md:gap-x-5 py-10">
